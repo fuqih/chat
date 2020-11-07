@@ -1,10 +1,10 @@
 package service
 
 import (
-	"time"
 	"../model"
 	"errors"
-	)
+	"time"
+)
 
 type ContactService struct {
 
