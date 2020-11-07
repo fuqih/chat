@@ -1,47 +1,46 @@
 package util
 
 import (
-
 	"net/http"
 
-	"io/ioutil"
-	"strings"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 )
 
-
-func Bind(req *http.Request,obj interface{}) error{
+func Bind(req *http.Request, obj interface{}) error {
 	contentType := req.Header.Get("Content-Type")
 	//如果是简单的json
-	if strings.Contains(strings.ToLower(contentType),"application/json"){
-		return  BindJson(req,obj)
+	if strings.Contains(strings.ToLower(contentType), "application/json") {
+		return BindJson(req, obj)
 	}
-	if strings.Contains(strings.ToLower(contentType),"application/x-www-form-urlencoded"){
-		return   BindForm(req,obj)
+	if strings.Contains(strings.ToLower(contentType), "application/x-www-form-urlencoded") {
+		return BindForm(req, obj)
 	}
 	return errors.New("当前方法暂不支持")
 }
 
-func BindJson(req *http.Request,obj interface{}) error{
+func BindJson(req *http.Request, obj interface{}) error {
 	s, err := ioutil.ReadAll(req.Body) //把  body 内容读入字符串
-	if err!=nil{
+	if err != nil {
 		return err
 	}
-	err = json.Unmarshal(s,obj)
+	err = json.Unmarshal(s, obj)
 	return err
 }
 
-func BindForm(req *http.Request,ptr interface{}) error{
+func BindForm(req *http.Request, ptr interface{}) error {
 	req.ParseForm()
 	fmt.Println(req.Form.Encode())
-	err := mapForm(ptr,req.Form)
+	err := mapForm(ptr, req.Form)
 	return err
 }
+
 //自动绑定方法
 //借鉴了gin
 //改良了时间绑定,
@@ -56,7 +55,7 @@ func mapForm(ptr interface{}, form map[string][]string) error {
 		}
 
 		structFieldKind := structField.Kind()
- 		inputFieldName := typeField.Tag.Get("form")
+		inputFieldName := typeField.Tag.Get("form")
 		if inputFieldName == "" {
 			inputFieldName = typeField.Name
 
@@ -187,18 +186,18 @@ func setTimeField(val string, structField reflect.StructField, value reflect.Val
 
 	if timeFormat == "" {
 		timeFormat = "2006-01-02 15:04:05"
-		val = strings.Replace(val,"/","-",0)
-		num := len(strings.Split(val," "))
-		if num==1{
-			val = val +" 00:00:00"
-		}else{
+		val = strings.Replace(val, "/", "-", 0)
+		num := len(strings.Split(val, " "))
+		if num == 1 {
+			val = val + " 00:00:00"
+		} else {
 			//2018-01-02 00
-			num =len(strings.Split(val,":"))
+			num = len(strings.Split(val, ":"))
 
-			if num==1{
-				val = val +":00:00"
-			}else if num==2{
-				val = val +":00"
+			if num == 1 {
+				val = val + ":00:00"
+			} else if num == 2 {
+				val = val + ":00"
 			}
 		}
 

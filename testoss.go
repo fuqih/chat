@@ -54,7 +54,7 @@ func UpLoadOss(){
 	url := "http://"+Bucket+"."+EndPoint+"/"+filename
 	print(url)
 }
-func main() {
+func main2() {
 	//UpLoadOss()
 	fmt.Println(rand.Int31())
 	fmt.Println(rand.Int31())
